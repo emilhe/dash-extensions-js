@@ -1,5 +1,5 @@
 {
-  "name": "dash-extensions",
+  "name": "dash-extensions-js",
   "version": "0.0.1",
   "description": "JavaScript utility functions for the dash-extensions package.",
   "main": "index.js",
