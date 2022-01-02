@@ -60,4 +60,5 @@ function resolveProps(props, functionalProps, context){
 export {
     resolveProp,
     resolveProps,
+    getDescendantProp
 };
