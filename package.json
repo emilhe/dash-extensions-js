@@ -10,5 +10,8 @@
     "dash"
   ],
   "author": "Emil Haldrup Eriksen",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "ramda": "^0.27.1"
+  }
 }

@@ -1,3 +1,6 @@
+import React from "react";
+import { omit } from "ramda";
+
 function isPlainObject(o) {
    return (o === null || Array.isArray(o) || typeof o == 'function' || o.constructor === Date ) ?
            false
@@ -56,6 +59,15 @@ function resolveProps(props, functionalProps, context){
     return nProps
 }
 
+function renderComponent(props){
+
+    const item = React.createElement(
+        window[props.item.namespace][props.item.type],
+        omit(["setProps", "children"], props.item.props),
+        props.item.props.children
+   )
+    return item
+}
 
 export {
     resolveProp,
