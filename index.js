@@ -8,7 +8,7 @@ function isPlainObject(o) {
 }
 
 function isFunction(functionToCheck) {
- return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+   return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
 
 function resolveProp(prop, context) {
@@ -59,14 +59,28 @@ function resolveProps(props, functionalProps, context){
     return nProps
 }
 
-function renderComponent(props){
-
-    const item = React.createElement(
-        window[props.item.namespace][props.item.type],
-        omit(["setProps", "children"], props.item.props),
-        props.item.props.children
-   )
-    return item
+function renderDashComponent(component, index=undefined){
+    // Array of stuff.
+    if(Array.isArray(component)){
+        return component.map((item, i) => renderDashComponent(item, i))
+    }
+    // Nothing or None.
+    if(component == undefined){
+        return undefined;
+    }
+    // Raw string.
+    if (typeof component === 'string' || component instanceof String){
+        return component;
+    }
+    // Add key if missing.
+    if(component.props.key === undefined){
+        component.props.key = index;
+    }
+    // Render react node.
+    return React.createElement(
+        window[component.namespace][component.type],
+        omit(["setProps", "children"], component.props),
+        renderDashComponent(component.props.children))
 }
 
 export {
