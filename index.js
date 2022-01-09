@@ -83,8 +83,20 @@ function renderDashComponent(component, index=undefined){
         renderDashComponent(component.props.children))
 }
 
+function renderDashComponents(props, propsToRender){
+    for (let i = 0; i < propsToRender.length; i++) {
+        let key = propsToRender[i];
+        if (props.hasOwnProperty(key)){
+            props[key] = renderDashComponent(props[key]);
+        }
+    }
+    return props
+}
+
 export {
     resolveProp,
     resolveProps,
-    getDescendantProp
+    getDescendantProp,
+    renderDashComponent,
+    renderDashComponents
 };
