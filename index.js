@@ -1,3 +1,6 @@
+import React from "react";
+import { omit } from "ramda";
+
 function isPlainObject(o) {
    return (o === null || Array.isArray(o) || typeof o == 'function' || o.constructor === Date ) ?
            false
@@ -5,7 +8,7 @@ function isPlainObject(o) {
 }
 
 function isFunction(functionToCheck) {
- return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+   return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
 }
 
 function resolveProp(prop, context) {
@@ -56,9 +59,44 @@ function resolveProps(props, functionalProps, context){
     return nProps
 }
 
+function renderDashComponent(component, index=undefined){
+    // Array of stuff.
+    if(Array.isArray(component)){
+        return component.map((item, i) => renderDashComponent(item, i))
+    }
+    // Nothing or None.
+    if(component == undefined){
+        return undefined;
+    }
+    // Raw string.
+    if (typeof component === 'string' || component instanceof String){
+        return component;
+    }
+    // Add key if missing.
+    if(component.props.key === undefined){
+        component.props.key = index;
+    }
+    // Render react node.
+    return React.createElement(
+        window[component.namespace][component.type],
+        omit(["setProps", "children"], component.props),
+        renderDashComponent(component.props.children))
+}
+
+function renderDashComponents(props, propsToRender){
+    for (let i = 0; i < propsToRender.length; i++) {
+        let key = propsToRender[i];
+        if (props.hasOwnProperty(key)){
+            props[key] = renderDashComponent(props[key]);
+        }
+    }
+    return props
+}
 
 export {
     resolveProp,
     resolveProps,
-    getDescendantProp
+    getDescendantProp,
+    renderDashComponent,
+    renderDashComponents
 };
