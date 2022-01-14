@@ -1,10 +1,11 @@
 {
+  "main": "build/index.js",
   "name": "dash-extensions-js",
-  "version": "0.0.4",
+  "version": "0.0.7rc9",
   "description": "JavaScript utility functions for the dash-extensions package.",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
   },
   "keywords": [
     "dash"
@@ -12,6 +13,18 @@
   "author": "Emil Haldrup Eriksen",
   "license": "MIT",
   "dependencies": {
-    "ramda": "^0.27.1"
+    "prop-types": "^15.8.1",
+    "ramda": "^0.27.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.8",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.3",
+    "webpack": "^5.66.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.3"
   }
 }

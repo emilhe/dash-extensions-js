@@ -1,5 +1,12 @@
 import React from "react";
-import { omit } from "ramda";
+import {
+    CheckedComponent,
+    isSimpleComponent,
+    NOT_LOADING,
+    Registry,
+    stringifyId
+} from "./dashSnippets";
+import {dissoc, isEmpty, type} from "ramda";
 
 function isPlainObject(o) {
    return (o === null || Array.isArray(o) || typeof o == 'function' || o.constructor === Date ) ?
@@ -59,28 +66,44 @@ function resolveProps(props, functionalProps, context){
     return nProps
 }
 
-function renderDashComponent(component, index=undefined){
+function renderDashComponent(component, index=null) {
+    // Nothing to render.
+    if (isEmpty(component)) {
+        return null;
+    }
+    // Simple stuff such as strings.
+    if (isSimpleComponent(component)) {
+        return component;
+    }
     // Array of stuff.
     if(Array.isArray(component)){
         return component.map((item, i) => renderDashComponent(item, i))
     }
-    // Nothing or None.
-    if(component == undefined){
-        return undefined;
+    // If we get here, we need to render an actual Dash component.
+    const element = Registry.resolve(component);
+    const props = dissoc('children', component.props);
+    const children = renderDashComponent(component.props.children);
+    // Make sure that id is a string.
+    if (type(props.id) === 'Object') {
+        // Turn object ids (for wildcards) into unique strings.
+        // Because of the `dissoc` above we're not mutating the layout,
+        // just the id we pass on to the rendered component
+        props.id = stringifyId(props.id);
     }
-    // Raw string.
-    if (typeof component === 'string' || component instanceof String){
-        return component;
-    }
-    // Add key if missing.
-    if(component.props.key === undefined){
-        component.props.key = index;
-    }
-    // Render react node.
-    return React.createElement(
-        window[component.namespace][component.type],
-        omit(["setProps", "children"], component.props),
-        renderDashComponent(component.props.children))
+    // Set loading as not-loading, and bind a dummy setProps handler.
+    const extraProps = {
+        loading_state: NOT_LOADING,
+        setProps: () => null,
+    };
+    // Render the component.
+    return <CheckedComponent
+        children={children}
+        element={element}
+        props={props}
+        extraProps={extraProps}
+        type={component.type}
+        key={index}
+    />
 }
 
 function renderDashComponents(props, propsToRender){
