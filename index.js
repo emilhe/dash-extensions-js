@@ -1,4 +1,4 @@
-import {dissoc, has, includes, isEmpty, mergeRight, type} from "ramda";
+import {dissoc, has, includes, isEmpty, isNil, mergeRight, type} from "ramda";
 import ReactPropTypesSecret from "prop-types/lib/ReactPropTypesSecret";
 import PropTypes from "prop-types";
 import React from "react";
@@ -336,7 +336,7 @@ function resolveProps(props, functionalProps, context){
 
 function renderDashComponent(component, index=null) {
     // Nothing to render.
-    if (isEmpty(component)) {
+    if (isNil(component) || isEmpty(component)) {
         return null;
     }
     // Simple stuff such as strings.
